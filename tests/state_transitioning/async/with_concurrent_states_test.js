@@ -22,7 +22,6 @@ module("SC.Statechart: With Concurrent States - Goto State Asynchronous Tests", 
       },
       
       enterState: function() {
-        // debugger;
         return this.performAsync('foo');
       },
       
