@@ -13,6 +13,8 @@ by Michael Cohen (aka. FrozenCanuck).
   * There are a few fixes for bugs that are in the SproutCore 1.x version that
     have not been ported over as of yet.
 
+If you run into a problem, please file an issue on this repository.
+
 ### Synopsis:
 
 TODO: Add documentation to the README.
