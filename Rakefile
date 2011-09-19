@@ -33,11 +33,12 @@ def uglify(file)
 end
 
 SproutCore::Compiler.output = "tmp/static"
+SproutCore::Compiler.intermediate = "tmp/sproutcore-statechart"
 
 def compile_statechart_task
   SproutCore::Compiler.intermediate = "tmp/sproutcore-statechart"
   js_tasks = SproutCore::Compiler::Preprocessors::JavaScriptTask.with_input "lib/**/*.js", "."
-  SproutCore::Compiler::CombineTask.with_tasks js_tasks, "#{SproutCore::Compiler.intermediate.gsub(/tmp\//, "")}"
+  SproutCore::Compiler::CombineTask.with_tasks js_tasks, "#{SproutCore::Compiler.intermediate}/sproutcore-statechart"
 end
 
 task :compile_statechart_task => compile_statechart_task
@@ -65,8 +66,15 @@ file "dist/sproutcore-statechart.min.js" => "dist/sproutcore-statechart.js" do
   File.open("dist/sproutcore-statechart.min.js", "w") do |file|
     file.puts uglify("dist/sproutcore-statechart.prod.js")
   end
+  rm "dist/sproutcore-statechart.prod.js"
 end
 
+desc "Build SproutCore Statecharts"
 task :dist => ["dist/sproutcore-statechart.min.js"]
+
+desc "Clean artifacts from previous builds"
+task :clean do
+  sh "rm -rf tmp && rm -rf dist"
+end
 
 task :default => :dist
