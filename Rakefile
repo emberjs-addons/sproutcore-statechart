@@ -9,7 +9,7 @@ module SproutCore
   module Compiler
     class Entry
       def body
-        "\n(function(exports) {\n#{@raw_body}\n})({})\n"
+        "\n(function(exports) {\n#{@raw_body}\n})({});\n"
       end
     end
   end
@@ -32,12 +32,11 @@ def uglify(file)
   "#{LICENSE}\n#{uglified}"
 end
 
+SproutCore::Compiler.intermediate = "tmp/intermediate"
 SproutCore::Compiler.output = "tmp/static"
-SproutCore::Compiler.intermediate = "tmp/sproutcore-statechart"
 
 def compile_statechart_task
-  SproutCore::Compiler.intermediate = "tmp/sproutcore-statechart"
-  js_tasks = SproutCore::Compiler::Preprocessors::JavaScriptTask.with_input "lib/**/*.js", "."
+  js_tasks = SproutCore::Compiler::Preprocessors::JavaScriptTask.with_input "sproutcore-statechart/lib/**/*.js", ".."
   SproutCore::Compiler::CombineTask.with_tasks js_tasks, "#{SproutCore::Compiler.intermediate}/sproutcore-statechart"
 end
 
