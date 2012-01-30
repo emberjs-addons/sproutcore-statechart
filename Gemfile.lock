@@ -1,8 +1,24 @@
 GIT
+  remote: https://github.com/livingsocial/rake-pipeline.git
+  revision: 5ab27c33bcecdc6f156c2e1ead5d5e831bc1acbd
+  specs:
+    rake-pipeline (0.5.0)
+      rake (~> 0.9.0)
+      thor
+
+GIT
   remote: https://github.com/wycats/abbot-from-scratch.git
   revision: 29dfaa6c3c120847e61f742f74c414e4872cc142
   specs:
     sproutcore (0.0.1)
+
+GIT
+  remote: https://github.com/wycats/rake-pipeline-web-filters.git
+  revision: 32428ba45bbc74e02287a7cf483004df71d89533
+  specs:
+    rake-pipeline-web-filters (0.5.0)
+      rack
+      rake-pipeline
 
 GEM
   remote: http://rubygems.org/
@@ -10,7 +26,9 @@ GEM
     execjs (1.2.6)
       multi_json (~> 1.0)
     multi_json (1.0.3)
+    rack (1.4.1)
     rake (0.9.2)
+    thor (0.14.6)
     uglifier (1.0.3)
       execjs (>= 0.3.0)
       multi_json (>= 1.0.2)
@@ -22,5 +40,7 @@ DEPENDENCIES
   execjs
   multi_json
   rake
+  rake-pipeline!
+  rake-pipeline-web-filters!
   sproutcore!
   uglifier

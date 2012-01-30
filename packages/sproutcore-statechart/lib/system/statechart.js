@@ -8,7 +8,7 @@
 
 require('sproutcore-statechart/system/state');
 require('sproutcore-statechart/mixins/statechart_delegate');
-require('sproutcore-statechart/mixins/delegate_support.js');
+require('sproutcore-statechart/mixins/delegate_support');
 
 var get = SC.get, set = SC.set, getPath = SC.getPath;
 
@@ -1353,7 +1353,7 @@ SC.StatechartManager = /** @scope SC.StatechartManager.prototype */{
         processedArgs.useHistory = value;
         break;
       case "object":
-        if (!SC.kindOf(value, SC.State)) {
+        if (!value.get || !value.get('isState')) {
           processedArgs.context = value;
         }
         break;

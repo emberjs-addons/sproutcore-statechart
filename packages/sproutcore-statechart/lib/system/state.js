@@ -26,7 +26,10 @@ var get = SC.get, set = SC.set, getPath = SC.getPath, slice = Array.prototype.sl
 */
 SC.State = SC.Object.extend(
   /** @lends SC.State.prototype */ {
-
+  
+  // walk like a duck!
+  isState: true,
+  
   /**
     The name of the state
     
