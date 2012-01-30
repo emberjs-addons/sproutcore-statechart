@@ -5,5 +5,5 @@
 // License:   Licensed under MIT license (see license.js)
 // ==========================================================================
 
-require('sproutcore-statechart/debug/monitor');
-require('sproutcore-statechart/debug/sequence_matcher');
+require('ember-statechart/debug/monitor');
+require('ember-statechart/debug/sequence_matcher');

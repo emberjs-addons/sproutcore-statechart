@@ -6,7 +6,7 @@
 // ==========================================================================
 /*globals SC */
 
-require('sproutcore-statechart/debug/sequence_matcher');
+require('ember-statechart/debug/sequence_matcher');
 
 SC.StatechartMonitor = SC.Object.extend({
   

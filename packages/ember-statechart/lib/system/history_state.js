@@ -7,7 +7,7 @@
 
 /*globals SC */
 
-require('sproutcore-statechart/system/state');
+require('ember-statechart/system/state');
 
 /**
   @class

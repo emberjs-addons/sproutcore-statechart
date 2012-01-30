@@ -1,4 +1,4 @@
-minispade.register('sproutcore-statechart/~tests/event_handling/advanced/respond_to_event_test', function() {
+minispade.register('ember-statechart/~tests/event_handling/advanced/respond_to_event_test', function() {
 // ==========================================================================
 // SC.Statechart Unit Test
 // ==========================================================================
@@ -400,7 +400,7 @@ test("try to perform 'yellow' on statechart -- current states X and Y", function
   ok(!root.get('handledAction'), 'root not did handle action yellow');
 });
 });
-minispade.register('sproutcore-statechart/~tests/event_handling/advanced/without_concurrent_states_test', function() {
+minispade.register('ember-statechart/~tests/event_handling/advanced/without_concurrent_states_test', function() {
 // ==========================================================================
 // SC.Statechart Unit Test
 // ==========================================================================
@@ -708,7 +708,7 @@ test("check statechart4 action handling", function() {
   equals(stateB.get('action'), 'orange', 'state B action should be orange');
 });
 });
-minispade.register('sproutcore-statechart/~tests/event_handling/basic/with_concurrent_states_test', function() {
+minispade.register('ember-statechart/~tests/event_handling/basic/with_concurrent_states_test', function() {
 // ==========================================================================
 // SC.Statechart Unit Test
 // ==========================================================================
@@ -914,7 +914,7 @@ test("send event eventZ", function() {
 });
 
 });
-minispade.register('sproutcore-statechart/~tests/event_handling/basic/without_concurrent_states_test', function() {
+minispade.register('ember-statechart/~tests/event_handling/basic/without_concurrent_states_test', function() {
 // ==========================================================================
 // SC.Statechart Unit Test
 // ==========================================================================
@@ -1038,7 +1038,7 @@ test("send event eventD while in state C", function() {
   equals(statechart.stateIsCurrentState('c'), true, 'current state should be c');
 });
 });
-minispade.register('sproutcore-statechart/~tests/state/initial_substate_test', function() {
+minispade.register('ember-statechart/~tests/state/initial_substate_test', function() {
 // ==========================================================================
 // SC.State Unit Test
 // ==========================================================================
@@ -1107,7 +1107,7 @@ test("go to state b and confirm current state is an empty state", function() {
   equals(stateB.getPath('initialSubstate.isCurrentState'), true, "state b\'s initial substate should be the current state");
 });
 });
-minispade.register('sproutcore-statechart/~tests/state/is_current_state_test', function() {
+minispade.register('ember-statechart/~tests/state/is_current_state_test', function() {
 // ==========================================================================
 // SC.Statechart Unit Test
 // ==========================================================================
@@ -1167,7 +1167,7 @@ test("check observing isCurrentState", function() {
 
 });
 });
-minispade.register('sproutcore-statechart/~tests/state/namespacing_test', function() {
+minispade.register('ember-statechart/~tests/state/namespacing_test', function() {
 // ==========================================================================
 // SC Unit Test
 // ==========================================================================
@@ -1417,7 +1417,7 @@ test("access all states in statechart4", function() {
   equals(state.get('value'), 'state B.Y', 'state a should have value "state B.Y"');
 });
 });
-minispade.register('sproutcore-statechart/~tests/state/plugin/mixin_test', function() {
+minispade.register('ember-statechart/~tests/state/plugin/mixin_test', function() {
 // ==========================================================================
 // SC.Statechart Unit Test
 // ==========================================================================
@@ -1487,7 +1487,7 @@ test("check plugin state C", function() {
   ok(stateC.get('isMixinB'));
 });
 });
-minispade.register('sproutcore-statechart/~tests/state/plugin/nesting_test', function() {
+minispade.register('ember-statechart/~tests/state/plugin/nesting_test', function() {
 // ==========================================================================
 // SC.State Unit Test
 // ==========================================================================
@@ -1584,7 +1584,7 @@ test("go to state e", function() {
   equals(statechart.stateIsCurrentState('e'), true, 'current state should be e');
 });
 });
-minispade.register('sproutcore-statechart/~tests/state/state_observes_test', function() {
+minispade.register('ember-statechart/~tests/state/state_observes_test', function() {
 // ==========================================================================
 // SC.State Unit Test
 // ==========================================================================
@@ -1822,7 +1822,7 @@ test("destroy statecharts and check that Objs have not observers", function() {
 
 
 });
-minispade.register('sproutcore-statechart/~tests/state_transitioning/async/core_test', function() {
+minispade.register('ember-statechart/~tests/state_transitioning/async/core_test', function() {
 // ==========================================================================
 // SC.Statechart Unit Test
 // ==========================================================================
@@ -1918,7 +1918,7 @@ test("test async - SC.Async.perform('bar')", function() {
   equals(obj.get('fooInvoked'), NO);
 });
 });
-minispade.register('sproutcore-statechart/~tests/state_transitioning/async/with_concurrent_states_test', function() {
+minispade.register('ember-statechart/~tests/state_transitioning/async/with_concurrent_states_test', function() {
 // ==========================================================================
 // SC.Statechart Unit Test
 // ==========================================================================
@@ -2045,7 +2045,7 @@ test("go to state b, then back to state a", function() {
   equals(stateD.get('counter'), 2, "state d should have counter equal to 2");
 });
 });
-minispade.register('sproutcore-statechart/~tests/state_transitioning/async/without_concurrent_states_test', function() {
+minispade.register('ember-statechart/~tests/state_transitioning/async/without_concurrent_states_test', function() {
 // ==========================================================================
 // SC.Statechart Unit Test
 // ==========================================================================
@@ -2238,7 +2238,7 @@ test("go to state c and then back to state a", function() {
   equals(stateE.get('counter'), 2, 'state e counter should be 2');
 });
 });
-minispade.register('sproutcore-statechart/~tests/state_transitioning/history_state/initial_substate/core_test', function() {
+minispade.register('ember-statechart/~tests/state_transitioning/history_state/initial_substate/core_test', function() {
 // ==========================================================================
 // SC.Statechart Unit Test
 // ==========================================================================
@@ -2288,7 +2288,7 @@ test("Check assigned history state", function() {
   equals(historyState.get('state'), stateB);
 });
 });
-minispade.register('sproutcore-statechart/~tests/state_transitioning/history_state/initial_substate/without_concurrent_states_test', function() {
+minispade.register('ember-statechart/~tests/state_transitioning/history_state/initial_substate/without_concurrent_states_test', function() {
 // ==========================================================================
 // SC.Statechart Unit Test
 // ==========================================================================
@@ -2508,7 +2508,7 @@ test("check state sequence with state b's historyState assigned", function() {
         'sequence should be exited[g, c, a], entered[b, f, n]');
 });
 });
-minispade.register('sproutcore-statechart/~tests/state_transitioning/history_state/standard/with_concurrent_states_test', function() {
+minispade.register('ember-statechart/~tests/state_transitioning/history_state/standard/with_concurrent_states_test', function() {
 // ==========================================================================
 // SC Unit Test
 // ==========================================================================
@@ -2598,7 +2598,7 @@ test("send event eventA", function() {
   
 });
 });
-minispade.register('sproutcore-statechart/~tests/state_transitioning/history_state/standard/without_concurrent_states/context_test', function() {
+minispade.register('ember-statechart/~tests/state_transitioning/history_state/standard/without_concurrent_states/context_test', function() {
 // ==========================================================================
 // SC Unit Test
 // ==========================================================================
@@ -2791,7 +2791,7 @@ test("pass context when going to state a's history state using state - gotoHisto
 //   equals(stateF.get('enterStateContext'), context, 'state f should have context upon entering');
 // });
 });
-minispade.register('sproutcore-statechart/~tests/state_transitioning/history_state/standard/without_concurrent_states/core_test', function() {
+minispade.register('ember-statechart/~tests/state_transitioning/history_state/standard/without_concurrent_states/core_test', function() {
 // ==========================================================================
 // SC.Statechart Unit Test
 // ==========================================================================
@@ -2993,7 +2993,7 @@ test("go to state b's history state (recursive)", function() {
   equals(statechart.getState('e').get('historyState'), statechart.getState('k'), 'state e\'s history state should be state k');
 });
 });
-minispade.register('sproutcore-statechart/~tests/state_transitioning/standard/with_concurrent_states/advanced_test', function() {
+minispade.register('ember-statechart/~tests/state_transitioning/standard/with_concurrent_states/advanced_test', function() {
 // ==========================================================================
 // SC.State Unit Test
 // ==========================================================================
@@ -3268,7 +3268,7 @@ test('from state l, go to state z, and then go to state s', function() {
    ok(monitor.matchEnteredStates(root, 'a', 'b', 'd', 'c', 'g', 'j', 'k', 'p', 's'), 'states root, A, B, C, D, G, J, K, P and S should all be entered');
 });
 });
-minispade.register('sproutcore-statechart/~tests/state_transitioning/standard/with_concurrent_states/basic_test', function() {
+minispade.register('ember-statechart/~tests/state_transitioning/standard/with_concurrent_states/basic_test', function() {
 // ==========================================================================
 // SC Unit Test
 // ==========================================================================
@@ -3421,7 +3421,7 @@ test("from state a, go to sibling concurrent state b", function() {
   ok(monitor.matchEnteredStates(root, 'a', 'c', 'b', 'e'), 'states root, A, C, B and E should all be entered');
 });
 });
-minispade.register('sproutcore-statechart/~tests/state_transitioning/standard/with_concurrent_states/intermediate_test', function() {
+minispade.register('ember-statechart/~tests/state_transitioning/standard/with_concurrent_states/intermediate_test', function() {
 // ==========================================================================
 // SC.State Unit Test
 // ==========================================================================
@@ -3584,7 +3584,7 @@ test("from state a, go to state z and then back to state a", function() {
   ok(monitor.matchEnteredStates(root, 'a', 'b', 'c', 'd', 'f'), 'states root, A, B, C, D and F should all be entered');
 });
 });
-minispade.register('sproutcore-statechart/~tests/state_transitioning/standard/without_concurrent_states/context_test', function() {
+minispade.register('ember-statechart/~tests/state_transitioning/standard/without_concurrent_states/context_test', function() {
 // ==========================================================================
 // SC Unit Test
 // ==========================================================================
@@ -3730,7 +3730,7 @@ test("pass context when going to state f using statechart - gotoState('f', state
   equals(stateF.get('enterStateContext'), context, 'state f should have context upon entering');
 });
 });
-minispade.register('sproutcore-statechart/~tests/state_transitioning/standard/without_concurrent_states/core_test', function() {
+minispade.register('ember-statechart/~tests/state_transitioning/standard/without_concurrent_states/core_test', function() {
 // ==========================================================================
 // SC.Statechart Unit Test
 // ==========================================================================
@@ -4013,7 +4013,7 @@ test("from state g, go to state m calling state g\'s gotoState", function() {
   ok(monitor.matchEnteredStates(root, 'b', 'f', 'm'), 'states root, B, F and M should all be entered');
 });
 });
-minispade.register('sproutcore-statechart/~tests/state_transitioning/transient/without_concurrent_states_test', function() {
+minispade.register('ember-statechart/~tests/state_transitioning/transient/without_concurrent_states_test', function() {
 // ==========================================================================
 // SC.Statechart Unit Test
 // ==========================================================================
@@ -4177,7 +4177,7 @@ test("enter transient state X", function() {
   equals(stateA.get('historyState'), stateH);
 });
 });
-minispade.register('sproutcore-statechart/~tests/statechart/create/assigned_root_state_test', function() {
+minispade.register('ember-statechart/~tests/statechart/create/assigned_root_state_test', function() {
 // ==========================================================================
 // SC.Statechart Unit Test
 // ==========================================================================
@@ -4255,7 +4255,7 @@ test("check obj2", function() {
   ok(obj2.get('statechartIsInitialized'), "obj should be an initialized statechart");
 });
 });
-minispade.register('sproutcore-statechart/~tests/statechart/create/unassigned_root_state_test', function() {
+minispade.register('ember-statechart/~tests/statechart/create/unassigned_root_state_test', function() {
 // ==========================================================================
 // SC.Statechart Unit Test
 // ==========================================================================
@@ -4419,7 +4419,7 @@ test("check obj4 statechart", function() {
   equals(obj4.get('rootState').getSubstate('stateF'), obj4.getState('stateF'), "obj.stateF should be equal to rootState.stateF");
 });
 });
-minispade.register('sproutcore-statechart/~tests/statechart/destroy_test', function() {
+minispade.register('ember-statechart/~tests/statechart/destroy_test', function() {
 // ==========================================================================
 // SC.Statechart Unit Test
 // ==========================================================================
@@ -4494,7 +4494,7 @@ test("check obj before and after destroy", function() {
   equals(stateB.get('parentState'), null, "state B should not have a parent state");
 });
 });
-minispade.register('sproutcore-statechart/~tests/statechart/invoke_state_method_test', function() {
+minispade.register('ember-statechart/~tests/statechart/invoke_state_method_test', function() {
 // ==========================================================================
 // SC.Statechart Unit Test
 // ==========================================================================
@@ -4737,7 +4737,7 @@ test("check obj2 - invoke method testX", function() {
   ok(!stateB.get('testInvoked'), "state B's test method should not have been invoked");
 });
 });
-minispade.register('sproutcore-statechart/~tests/statechart/owner_test', function() {
+minispade.register('ember-statechart/~tests/statechart/owner_test', function() {
 // ==========================================================================
 // SC.Statechart Unit Test
 // ==========================================================================
