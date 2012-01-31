@@ -22,6 +22,9 @@
 */
 SC.StateRouteHandlerContext = SC.Object.extend(
   /** @scope SC.StateRouteContext.prototype */{
+  
+  // walk like a duck
+  isStateRouteHandlerContext: true,
    
   /**
     The state that constructed this context object.
