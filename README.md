@@ -1,4 +1,4 @@
-# SproutCore Statechart
+# SproutCore (Ember.js) Statechart
 
 ### Description:
 
@@ -13,11 +13,19 @@ TODO: Add documentation to the README.
 For the time being, there are plenty of examples in the source code, and example
 usage throughout the extensive unit tests.
 
-# Building ember-statechart.js
+### Building ember-statechart.js
 
-1. Run `rake` to build ember-statechart.js. Two builds will be placed in the `dist/` directory.
-  * `ember-statechart.js` and `ember-statechart.min.js` - unminified and minified
-    builds of ember-statechart.js
+You need ruby and some gems to build the source code and to run unit tests.
+
+1. Install Ruby 1.9.2+. There are many resources on the web can help; one of the best is [rvm](http://rvm.beginrescueend.com/).
+
+2. Install Bundler: `gem install bundler`
+
+3. Run `bundle` inside the project root to install the gem dependencies.
+
+4. Run `rake` to build ember-statechart.js. Two builds will be placed in the `dist/` directory.
+
+5. `ember-statechart.js` and `ember-statechart.min.js` - unminified and minified builds of ember-statechart.js
 
 If you are building under Linux, you will need a JavaScript runtime for
 minification. You can either install nodejs or `gem install
@@ -27,15 +35,9 @@ therubyracer`.
 
 The repository has been refactored to use the same structure as the [Ember.js](https://github.com/emberjs/ember.js) project:
 
-1. Install Ruby 1.9.2+. There are many resources on the web can help; one of the best is [rvm](http://rvm.beginrescueend.com/).
+1. To start the development server, run `bundle exec rackup`.
 
-2. Install Bundler: `gem install bundler`
-
-3. Run `bundle` inside the project root to install the gem dependencies.
-
-4. To start the development server, run `bundle exec rackup`.
-
-5. Then visit: [http://localhost:9292/tests/index.html?package=all](http://localhost:9292/tests/index.html?package=all)
+2. Then visit: [http://localhost:9292/tests/index.html?package=all](http://localhost:9292/tests/index.html?package=all)
 
 You can also pass `jquery=VERSION` in the test URL to test different versions of jQuery. Default is 1.7.1.
 
@@ -45,6 +47,7 @@ You can also pass `jquery=VERSION` in the test URL to test different versions of
     problems are captured in the unit tests
   * There are a few fixes for bugs that are in the SproutCore 1.x version that
     have not been ported over as of yet.
+  * The Unit Tests for route triggered are failing at the moment, but it works -> needs to be fixed!
 
 If you run into a problem, please file an issue on this repository.
 
