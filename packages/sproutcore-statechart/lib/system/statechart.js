@@ -6,10 +6,10 @@
 // ==========================================================================
 /*globals SC */
 
-require('ember-statechart/system/state');
-require('ember-statechart/mixins/delegate_support');
-require('ember-statechart/mixins/statechart_delegate');
-require('ember-statechart/system/state_route_handler_context');
+require('sproutcore-statechart/system/state');
+require('sproutcore-statechart/mixins/delegate_support');
+require('sproutcore-statechart/mixins/statechart_delegate');
+require('sproutcore-statechart/system/state_route_handler_context');
 
 var get = SC.get, set = SC.set, getPath = SC.getPath;
 

@@ -4,7 +4,7 @@
 // License:   Licensed under MIT license (see license.js)
 // ==========================================================================
 
-require('ember-statechart/core');
-require('ember-statechart/debug');
-require('ember-statechart/ext');
-require('ember-statechart/system');
+require('sproutcore-statechart/core');
+require('sproutcore-statechart/debug');
+require('sproutcore-statechart/ext');
+require('sproutcore-statechart/system');

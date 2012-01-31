@@ -5,8 +5,8 @@
 // License:   Licensed under MIT license (see license.js)
 // ==========================================================================
 
-require('ember-statechart/system/async');
-require('ember-statechart/system/empty_state');
-require('ember-statechart/system/history_state');
-require('ember-statechart/system/state');
-require('ember-statechart/system/statechart');
+require('sproutcore-statechart/system/async');
+require('sproutcore-statechart/system/empty_state');
+require('sproutcore-statechart/system/history_state');
+require('sproutcore-statechart/system/state');
+require('sproutcore-statechart/system/statechart');

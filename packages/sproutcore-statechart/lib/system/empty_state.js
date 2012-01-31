@@ -6,7 +6,7 @@
 // ==========================================================================
 /*globals SC */
 
-require('ember-statechart/system/state');
+require('sproutcore-statechart/system/state');
 
 /** 
   The default name given to an empty state

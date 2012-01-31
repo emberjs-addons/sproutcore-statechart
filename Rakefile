@@ -47,17 +47,17 @@ end
 ## TASKS ##
 
 # Create ember:package tasks for each of the Ember packages
-namespace :ember do
+namespace :sproutcore do
   %w(statechart).each do |package|
-    task package => compile_package_task("ember-#{package}", "ember-#{package}")
+    task package => compile_package_task("sproutcore-#{package}", "sproutcore-#{package}")
   end
 end
 
 # Create a build task that depends on all of the package dependencies
-task :build => ["ember:statechart"]
+task :build => ["sproutcore:statechart"]
 
 distributions = {
-  "ember-statechart" => ["ember-statechart"]
+  "sproutcore-statechart" => ["sproutcore-statechart"]
 }
 
 distributions.each do |name, libraries|
