@@ -13,6 +13,13 @@ TODO: Add documentation to the README.
 For the time being, there are plenty of examples in the source code, and example
 usage throughout the extensive unit tests.
 
+### Learning by Example
+
+We are working hard to provide more documentation and examples for Ember.js and here specifically for
+the statechart framework. Until there is more, you can learn from this example:
+
+[Quick Notes - Example Ember.js Application for statecharts and routing support](https://github.com/DominikGuzei/ember-routing-statechart-example)
+
 ### Building ember-statechart.js
 
 You need ruby and some gems to build the source code and to run unit tests.
