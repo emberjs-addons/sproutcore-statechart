@@ -15,15 +15,17 @@ module SproutCore
   end
 end
 
+## HELPERS ##
+
 def strip_require(file)
   result = File.read(file)
-  result.gsub!(%r{^\s*require\(['"]([^'"])*['"]\);?\s*$}, "")
+  result.gsub!(%r{^\s*require\(['"]([^'"])*['"]\);?\s*}, "")
   result
 end
 
-def strip_sc_assert(file)
+def strip_ember_assert(file)
   result = File.read(file)
-  result.gsub!(%r{^(\s)+sc_assert\((.*)\).*$}, "")
+  result.gsub!(%r{^(\s)+ember_assert\((.*)\).*$}, "")
   result
 end
 
@@ -35,43 +37,73 @@ end
 SproutCore::Compiler.intermediate = "tmp/intermediate"
 SproutCore::Compiler.output = "tmp/static"
 
-def compile_statechart_task
-  js_tasks = SproutCore::Compiler::Preprocessors::JavaScriptTask.with_input "sproutcore-statechart/lib/**/*.js", ".."
-  SproutCore::Compiler::CombineTask.with_tasks js_tasks, "#{SproutCore::Compiler.intermediate}/sproutcore-statechart"
+# Create a compile task for an Ember package. This task will compute
+# dependencies and output a single JS file for a package.
+def compile_package_task(input, output=input)
+  js_tasks = SproutCore::Compiler::Preprocessors::JavaScriptTask.with_input "packages/#{input}/lib/**/*.js", "."
+  SproutCore::Compiler::CombineTask.with_tasks js_tasks, "#{SproutCore::Compiler.intermediate}/#{output}"
 end
 
-task :compile_statechart_task => compile_statechart_task
+## TASKS ##
 
-task :build => [:compile_statechart_task]
-
-file "dist/sproutcore-statechart.js" => :build do
-  puts "Generating sproutcore-statechart.js"
-  
-  mkdir_p "dist"
-  
-  File.open("dist/sproutcore-statechart.js", "w") do |file|
-    file.puts strip_require("tmp/static/sproutcore-statechart.js")
+# Create ember:package tasks for each of the Ember packages
+namespace :sproutcore do
+  %w(statechart).each do |package|
+    task package => compile_package_task("sproutcore-#{package}", "sproutcore-#{package}")
   end
 end
 
-# Minify dist/sproutcore-statechart.js to dist/sproutcore-statechart.min.js
-file "dist/sproutcore-statechart.min.js" => "dist/sproutcore-statechart.js" do
-  puts "Generating sproutcore-statechart.min.js"
-  
-  File.open("dist/sproutcore-statechart.prod.js", "w") do |file|
-    file.puts strip_sc_assert("dist/sproutcore-statechart.js")
+# Create a build task that depends on all of the package dependencies
+task :build => ["sproutcore:statechart"]
+
+distributions = {
+  "sproutcore-statechart" => ["sproutcore-statechart"]
+}
+
+distributions.each do |name, libraries|
+  # Strip out require lines. For the interim, requires are
+  # precomputed by the compiler so they are no longer necessary at runtime.
+  file "dist/#{name}.js" => :build do
+    puts "Generating #{name}.js"
+
+    mkdir_p "dist"
+
+    File.open("dist/#{name}.js", "w") do |file|
+      libraries.each do |library|
+        file.puts strip_require("tmp/static/#{library}.js")
+      end
+    end
   end
-  
-  File.open("dist/sproutcore-statechart.min.js", "w") do |file|
-    file.puts uglify("dist/sproutcore-statechart.prod.js")
+
+  # Minified distribution
+  file "dist/#{name}.min.js" => "dist/#{name}.js" do
+    require 'zlib'
+
+    print "Generating #{name}.min.js... "
+    STDOUT.flush
+
+    File.open("dist/#{name}.prod.js", "w") do |file|
+      file.puts strip_ember_assert("dist/#{name}.js")
+    end
+
+    minified_code = uglify("dist/#{name}.prod.js")
+    File.open("dist/#{name}.min.js", "w") do |file|
+      file.puts minified_code
+    end
+
+    gzipped_kb = Zlib::Deflate.deflate(minified_code).bytes.count / 1024
+
+    puts "#{gzipped_kb} KB gzipped"
+
+    rm "dist/#{name}.prod.js"
   end
-  rm "dist/sproutcore-statechart.prod.js"
 end
 
-desc "Build SproutCore Statecharts"
-task :dist => ["dist/sproutcore-statechart.min.js"]
 
-desc "Clean artifacts from previous builds"
+desc "Build Ember.js"
+task :dist => distributions.keys.map {|name| "dist/#{name}.min.js"}
+
+desc "Clean build artifacts from previous builds"
 task :clean do
   sh "rm -rf tmp && rm -rf dist"
 end

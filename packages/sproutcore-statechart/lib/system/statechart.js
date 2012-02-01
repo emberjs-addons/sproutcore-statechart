@@ -7,6 +7,9 @@
 /*globals SC */
 
 require('sproutcore-statechart/system/state');
+require('sproutcore-statechart/mixins/delegate_support');
+require('sproutcore-statechart/mixins/statechart_delegate');
+require('sproutcore-statechart/system/state_route_handler_context');
 
 var get = SC.get, set = SC.set, getPath = SC.getPath;
 
@@ -305,6 +308,29 @@ SC.StatechartManager = /** @scope SC.StatechartManager.prototype */{
     @property {Boolean}
   */
   suppressStatechartWarnings: false,
+  
+  /**
+    A statechart delegate used by the statechart and the states that the statechart 
+    manages. The value assigned must adhere to the {@link SC.StatechartDelegate} mixin.
+
+    @property {SC.Object}
+
+    @see SC.StatechartDelegate
+  */
+  delegate: null,
+
+  /**
+    Computed property that returns an objects that adheres to the
+    {@link SC.StatechartDelegate} mixin. If the {@link #delegate} is not
+    assigned then this object is the default value returned.
+
+    @see SC.StatechartDelegate
+    @see #delegate
+  */
+  statechartDelegate: function() {
+    var del = this.get('delegate');
+    return this.delegateFor('isStatechartDelegate', del);
+  }.property('delegate'),
   
   init: function() {
     if (get(this, 'autoInitStatechart')) {
@@ -719,13 +745,17 @@ SC.StatechartManager = /** @scope SC.StatechartManager.prototype */{
       this.statechartLogTrace("END gotoState: %@".fmt(gotoState));
     }
     
-    // Okay. We're done with the current state transition. Make sure to unlock the
-    // gotoState and let other pending state transitions execute.
+    this._cleanupStateTransition();
+  },
+  /** @private */
+  _cleanupStateTransition: function() {
+    this._currentGotoStateAction = null;
     this._gotoStateSuspendedPoint = null;
-    this._gotoStateLocked = false;
+    this._gotoStateActions = null;
+    this._gotoStateLocked = NO;
     this._flushPendingStateTransition();
   },
-  
+    
   /** @private */
   _exitState: function(state, context) {
     var parentState;
@@ -749,9 +779,9 @@ SC.StatechartManager = /** @scope SC.StatechartManager.prototype */{
     set(state, 'currentSubstates', []);
     state.notifyPropertyChange('isCurrentState');
     
-    state.stateWillBecomeExited();
+    state.stateWillBecomeExited(context);
     var result = this.exitState(state, context);
-    state.stateDidBecomeExited();
+    state.stateDidBecomeExited(context);
     
     if (get(this, 'monitorIsActive')) get(this, 'monitor').pushExitedState(state);
     
@@ -796,9 +826,9 @@ SC.StatechartManager = /** @scope SC.StatechartManager.prototype */{
     
     state.notifyPropertyChange('isCurrentState');
   
-    state.stateWillBecomeEntered();
+    state.stateWillBecomeEntered(context);
     var result = this.enterState(state, context);
-    state.stateDidBecomeEntered();
+    state.stateDidBecomeEntered(context);
     
     if (get(this, 'monitorIsActive')) get(this, 'monitor').pushEnteredState(state);
     
@@ -815,7 +845,11 @@ SC.StatechartManager = /** @scope SC.StatechartManager.prototype */{
     @param context {Hash} a context hash object to provide the enterState method
   */
   enterState: function(state, context) {
-    return state.enterState(context);
+    if (state.enterStateByRoute && SC.kindOf(context, SC.StateRouteHandlerContext)) {
+      return state.enterStateByRoute(context);
+    } else {
+      return state.enterState(context);
+    }
   },
   
   /**
@@ -1320,7 +1354,9 @@ SC.StatechartManager = /** @scope SC.StatechartManager.prototype */{
         processedArgs.useHistory = value;
         break;
       case "object":
-        processedArgs.context = value;
+        if (!value.get || !value.get('isState')) {
+          processedArgs.context = value;
+        }
         break;
       default:
         processedArgs.fromCurrentState = value;
@@ -1463,6 +1499,8 @@ SC.StatechartManager = /** @scope SC.StatechartManager.prototype */{
   }
   
 };
+
+SC.mixin(SC.StatechartManager, SC.DelegateSupport, SC.StatechartDelegate);
 
 /** 
   The default name given to a statechart's root state

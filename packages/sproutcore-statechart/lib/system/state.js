@@ -26,7 +26,10 @@ var get = SC.get, set = SC.set, getPath = SC.getPath, slice = Array.prototype.sl
 */
 SC.State = SC.Object.extend(
   /** @lends SC.State.prototype */ {
-
+  
+  // walk like a duck!
+  isState: true,
+  
   /**
     The name of the state
     
@@ -111,6 +114,25 @@ SC.State = SC.Object.extend(
   */
   enteredSubstates: null,
   
+  /**
+    Can optionally assign what route this state is to represent. 
+
+    If assigned then this state will be notified to handle the route when triggered
+    any time the app's location changes and matches this state's assigned route. 
+    The handler invoked is this state's {@link #routeTriggered} method. 
+
+    The value assigned to this property is dependent on the underlying routing 
+    mechanism used by the application. The default routing mechanism is to use 
+    SC.routes.
+
+    @property {String|Hash}
+
+    @see #routeTriggered
+    @see #location
+    @see SC.StatechartDelegate
+  */
+  representRoute: null,
+  
   /** 
     Indicates if this state should trace actions. Useful for debugging
     purposes. Managed by the statechart.
@@ -140,11 +162,56 @@ SC.State = SC.Object.extend(
     return owner ? owner : sc;
   }.property().cacheable(),
   
+  /**
+    Returns the statechart's assigned delegate. A statechart delegate is one
+    that adheres to the {@link SC.StatechartDelegate} mixin. 
+
+    @property {SC.Object}
+
+    @see SC.StatechartDelegate
+  */
+  statechartDelegate: function() {
+    return this.getPath('statechart.statechartDelegate');
+  }.property().cacheable(),
+  
+  /**
+    A volatile property used to get and set the app's current location. 
+
+    This computed property defers to the the statechart's delegate to 
+    actually update and acquire the app's location.
+
+    Note: Binding for this pariticular case is discouraged since in most
+    cases we need the location value immediately. If we were to use
+    bindings then the location value wouldn't be updated until at least
+    the end of one run loop. It is also advised that the delegate not
+    have its `statechartUpdateLocationForState` and
+    `statechartAcquireLocationForState` methods implemented where bindings
+    are used since they will inadvertenly stall the location value from
+    propogating immediately.
+
+    @property {String}
+
+    @see SC.StatechartDelegate#statechartUpdateLocationForState
+    @see SC.StatechartDelegate#statechartAcquireLocationForState
+  */
+  location: function(key, value) {
+    var sc = this.get('statechart'),
+        del = this.get('statechartDelegate');
+
+    if (value !== undefined) {
+      del.statechartUpdateLocationForState(sc, value, this);
+    }
+
+    return del.statechartAcquireLocationForState(sc, this);
+  }.property(),
+  
   init: function() {
     this._registeredActionHandlers = {};
     this._registeredStringActionHandlers = {};
     this._registeredRegExpActionHandlers = [];
     this._registeredStateObserveHandlers = {};
+    this._isEnteringState = NO;
+    this._isExitingState = NO;
 
     // Setting up observes this way is faster then using .observes,
     // which adds a noticable increase in initialization time.
@@ -203,6 +270,7 @@ SC.State = SC.Object.extend(
     if (get(this, 'stateIsInitialized')) return;
     
     this._registerWithParentStates();
+    this._setupRouteHandling();
     
     var key = null, 
         value = null,
@@ -291,6 +359,105 @@ SC.State = SC.Object.extend(
     set(this, 'currentSubstates', []);
     set(this, 'enteredSubstates', []);
     set(this, 'stateIsInitialized', YES);
+  },
+  
+  /** @private 
+
+    Used to bind this state with a route this state is to represent if a route has been assigned.
+
+    When invoked, the method will delegate the actual binding strategy to the statechart delegate 
+    via the delegate's {@link SC.StatechartDelegate#statechartBindStateToRoute} method.
+
+    Note that a state cannot be bound to a route if this state is a concurrent state.
+
+    @see #representRoute
+    @see SC.StatechartDelegate#statechartBindStateToRoute
+  */
+  _setupRouteHandling: function() {
+    var route = this.get('representRoute'),
+        sc = this.get('statechart'),
+        del = this.get('statechartDelegate');
+
+    if (!route) return;
+
+    if (this.get('isConcurrentState')) {
+      this.stateLogError("State %@ cannot handle route '%@' since state is concurrent".fmt(this, route));
+      return;
+    }
+
+    del.statechartBindStateToRoute(sc, this, route, this.routeTriggered);
+  },
+
+  /** 
+    Main handler that gets triggered whenever the app's location matches this state's assigned
+    route. 
+
+    When invoked the handler will first refer to the statechart delegate to determine if it
+    should actually handle the route via the delegate's 
+    {@see SC.StatechartDelegate#statechartShouldStateHandleTriggeredRoute} method. If the 
+    delegate allows the handling of the route then the state will continue on with handling
+    the triggered route by calling the state's {@link #handleTriggeredRoute} method, otherwise 
+    the state will cancel the handling and inform the delegate through the delegate's 
+    {@see SC.StatechartDelegate#statechartStateCancelledHandlingRoute} method.
+
+    The handler will create a state route context ({@link SC.StateRouteContext}) object 
+    that packages information about what is being currently handled. This context object gets 
+    passed along to the delegate's invoked methods as well as the state transition process. 
+
+    Note that this method is not intended to be directly called or overridden.
+
+    @see #representRoute
+    @see SC.StatechartDelegate#statechartShouldStateHandleRoute
+    @see SC.StatechartDelegate#statechartStateCancelledHandlingRoute
+    @see #createStateRouteHandlerContext
+    @see #handleTriggeredRoute
+  */
+  routeTriggered: function(params) {
+    if (this._isEnteringState) return;
+
+    var sc = this.get('statechart'),
+        del = this.get('statechartDelegate'),
+        loc = this.get('location');
+
+    var attr = {
+      state: this,
+      location: loc,
+      params: params,
+      handler: this.routeTriggered
+    };
+
+    var context = this.createStateRouteHandlerContext(attr);
+
+    if (del.statechartShouldStateHandleTriggeredRoute(sc, this, context)) {
+      if (this.get('trace') && loc) {
+        this.stateLogTrace("will handle route '%@'".fmt(loc));
+      }
+      this.handleTriggeredRoute(context);
+    } else {
+      del.statechartStateCancelledHandlingTriggeredRoute(sc, this, context);
+    }
+  },
+
+  /**
+    Constructs a new instance of a state routing context object.
+
+    @param {Hash} attr attributes to apply to the constructed object
+    @return {SC.StateRouteContext}
+
+    @see #handleRoute
+  */
+  createStateRouteHandlerContext: function(attr) {
+    return SC.StateRouteHandlerContext.create(attr);
+  },
+
+  /**
+    Invoked by this state's {@link #routeTriggered} method if the state is
+    actually allowed to handle the triggered route. 
+
+    By default the method invokes a state transition to this state.
+  */
+  handleTriggeredRoute: function(context) {
+    this.gotoState(this, context);
   },
   
   /**
@@ -505,7 +672,11 @@ SC.State = SC.Object.extend(
   
   /**
     Used to go to a state in the statechart either directly from this state if it is a current state,
-    or from one of this state's current substates.
+    or from one of the current states within the same tree of states. To find the current state in the 
+    same tree, we walk up the hierarchy and look on each parentState for current substates. 
+    When the first current substate is found, it is chosen to transition from. This approach is much
+    better than just choosing the first current state of the statechart, since this can lead to problems
+    with transitions between concurrent states.
     
     Note that if the value given is a string, it will be assumed to be a path to a state. The path
     will be relative to the statechart's root state; not relative to this state.
@@ -529,8 +700,17 @@ SC.State = SC.Object.extend(
     
     if (get(this, 'isCurrentState')) {
       fromState = this;
-    } else if (get(this, 'hasCurrentSubstates')) {
-      fromState = get(this, 'currentSubstates')[0];
+    } else {
+      nextParentState = this;
+
+      while(true) {
+        if(nextParentState.get('hasCurrentSubstates')) {
+          break;
+        }
+        nextParentState = nextParentState.get('parentState');
+      }
+
+      fromState = nextParentState.get('currentSubstates')[0];
     }
     
     get(this, 'statechart').gotoState(state, fromState, context);
@@ -811,7 +991,9 @@ SC.State = SC.Object.extend(
     
     @see #enterState
   */
-  stateWillBecomeEntered: function() { },
+  stateWillBecomeEntered: function(context) { 
+    this._isEnteringState = YES;
+  },
   
   /**
     Notification called just after enterState is invoked. 
@@ -821,8 +1003,9 @@ SC.State = SC.Object.extend(
     
     @see #enterState
   */
-  stateDidBecomeEntered: function() { 
+  stateDidBecomeEntered: function(context) { 
     this._setupAllStateObserveHandlers();
+    this._isEnteringState = NO;
   },
   
   /**
@@ -857,7 +1040,8 @@ SC.State = SC.Object.extend(
     
     @see #exitState
   */
-  stateWillBecomeExited: function() { 
+  stateWillBecomeExited: function(context) { 
+    this._isExitingState = YES;
     this._teardownAllStateObserveHandlers();
   },
   
@@ -869,7 +1053,9 @@ SC.State = SC.Object.extend(
     
     @see #exitState
   */
-  stateDidBecomeExited: function() { },
+  stateDidBecomeExited: function(context) { 
+    this._isExitingState = NO;
+  },
   
   /** @private 
   
