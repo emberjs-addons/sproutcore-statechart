@@ -20,7 +20,7 @@ the statechart framework. Until there is more, you can learn from this example:
 
 [Quick Notes - Example Ember.js Application for statecharts and routing support](https://github.com/DominikGuzei/ember-routing-statechart-example)
 
-### Building ember-statechart.js
+### Building sproutcore-statechart.js
 
 You need ruby and some gems to build the source code and to run unit tests.
 
@@ -30,9 +30,9 @@ You need ruby and some gems to build the source code and to run unit tests.
 
 3. Run `bundle` inside the project root to install the gem dependencies.
 
-4. Run `rake` to build ember-statechart.js. Two builds will be placed in the `dist/` directory.
+4. Run `rake` to build sproutcore-statechart.js. Two builds will be placed in the `dist/` directory.
 
-5. `ember-statechart.js` and `ember-statechart.min.js` - unminified and minified builds of ember-statechart.js
+5. `sproutcore-statechart.js` and `sproutcore-statechart.min.js` - unminified and minified builds of sproutcore-statechart.js
 
 If you are building under Linux, you will need a JavaScript runtime for
 minification. You can either install nodejs or `gem install
